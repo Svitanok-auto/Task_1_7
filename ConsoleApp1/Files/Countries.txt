@@ -24,6 +24,4 @@ Spain;True
 Sweden;False
 Ireland;False
 Denmark;False
-Hungary;False
-
-
+Hungary;Fallse

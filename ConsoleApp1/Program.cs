@@ -13,39 +13,48 @@ namespace ConsoleApp7
             Console.WriteLine("Start...");
             string filePath = Path.Combine(PathHelper.SolutionFolderPath, "Files", "Countries.txt");
             Console.WriteLine("File Path is: " + filePath);
-            Dictionary<int, Country> dictionary = AddCountryToDictionary(CreateDictionary(filePath));
-            fileReader.PrintFile(ConvertDictionaryToArray(EditIsTelenorSupportedInDictionary(dictionary)), filePath);
-
+            Dictionary<int, Country> dictionary = CreateDictionary(filePath);
+            if (dictionary != null)
+            {
+                dictionary = AddCountryToDictionary(dictionary);
+                dictionary = EditIsTelenorSupportedInDictionary(dictionary);
+                PrintDictionary(dictionary);
+                fileReader.PrintFile(ConvertDictionaryToArray(dictionary), filePath);
+            }
             Console.WriteLine("End...");
             Console.ReadLine();
         }
 
         public static Dictionary<int, Country> CreateDictionary(string filePath)
         {
-            int i = 0;
-            string[] countryArray = fileReader.GetCountryArrayFromFile(filePath);
-            Dictionary<int, Country> countries = new Dictionary<int, Country>();
-            string subline = ";";
-            int startIndex = 0;
-            while ((countryArray[i] != null) && (countryArray[i].Length > 0))
+           if (fileReader.GetCountryArrayFromFile(filePath) != null)
             {
-                int index = countryArray[i].IndexOf(subline);
-                int length = countryArray[i].Length;
-                Country country = new Country();
-                country.Name = countryArray[i].Substring(startIndex, index);
-
-                if (countryArray[i].Substring(index + 1) == "true" || countryArray[i].Substring(index + 1) == "True" || countryArray[i].Substring(index + 1) == "TRUE")
+                int i = 0;
+                List<string> countryList = fileReader.GetCountryArrayFromFile(filePath);
+                Dictionary<int, Country> countries = new Dictionary<int, Country>();
+                string subline = ";";
+                int startIndex = 0;
+                foreach (string countryElement in countryList)
                 {
-                    country.IsTelenorSupported = true;
+                    int index = countryElement.IndexOf(subline);
+                    Country country = new Country
+                    {
+                        Name = countryElement.Substring(startIndex, index)
+                    };
+                    if (countryElement.Substring(index + 1).ToLower() == "true")
+                    {
+                        country.IsTelenorSupported = true;
+                    }
+                    else
+                    {
+                        country.IsTelenorSupported = false;
+                    }
+                    countries.Add(i + 1, country);
+                    i++;
                 }
-                else if (countryArray[i].Substring(index + 1) == "false" || countryArray[i].Substring(index + 1) == "False" || countryArray[i].Substring(index + 1) == "FALSE")
-                {
-                    country.IsTelenorSupported = false;
-                }
-                countries.Add(i + 1, country);
-                i++;
+                return countries;
             }
-        return countries;
+            return null;
         }
 
         public static Dictionary<int, Country> AddCountryToDictionary(Dictionary<int, Country> dictionary)
@@ -64,7 +73,10 @@ namespace ConsoleApp7
             }
             else
             {
-                Country country = new Country() { Name = "Ukraine", IsTelenorSupported = true };
+                Country country = new Country() { 
+                    Name = "Ukraine", 
+                    IsTelenorSupported = true };
+
                 dictionary.Add(dictionary.Count + 1, country);
                 return dictionary;
             }
@@ -89,21 +101,18 @@ namespace ConsoleApp7
                     Console.WriteLine("Updates: Key = {0}, Value Name = {1}, Value IsTelenorSupported = {2}", kvp.Key, kvp.Value.Name, kvp.Value.IsTelenorSupported);
                 }
             }
-        PrintDictionary(dictionary);
         return dictionary;
         }
 
-        public static string[] ConvertDictionaryToArray(Dictionary<int, Country> dictionary)
+        public static List<string> ConvertDictionaryToArray(Dictionary<int, Country> dictionary)
         {
-            int i = 0;
-            string[] countryArray = new string[30];
+            List<string> countryList = new List<string>();
             foreach (var entry in dictionary)
             {
                  string dictionaryString = entry.Value.Name + ";" + entry.Value.IsTelenorSupported;
-                 countryArray[i] = dictionaryString;
-                 i++;
+                 countryList.Add(dictionaryString);
             }
-        return countryArray;
+        return countryList;
         }
     }
 }
