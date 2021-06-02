@@ -6,7 +6,7 @@ namespace Task_1_7.Common
 {
     public class FileReader
     {
-        public List<string> GetCountryArrayFromFile(string filePath)
+        public List<string> GetCountryListFromFile(string filePath)
         {
             try
             {

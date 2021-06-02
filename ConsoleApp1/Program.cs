@@ -19,7 +19,7 @@ namespace ConsoleApp7
                 dictionary = AddCountryToDictionary(dictionary);
                 dictionary = EditIsTelenorSupportedInDictionary(dictionary);
                 PrintDictionary(dictionary);
-                fileReader.PrintFile(ConvertDictionaryToArray(dictionary), filePath);
+                fileReader.PrintFile(ConvertDictionaryToList(dictionary), filePath);
             }
             Console.WriteLine("End...");
             Console.ReadLine();
@@ -27,10 +27,10 @@ namespace ConsoleApp7
 
         public static Dictionary<int, Country> CreateDictionary(string filePath)
         {
-           if (fileReader.GetCountryArrayFromFile(filePath) != null)
+           if (fileReader.GetCountryListFromFile(filePath) != null)
             {
                 int i = 0;
-                List<string> countryList = fileReader.GetCountryArrayFromFile(filePath);
+                List<string> countryList = fileReader.GetCountryListFromFile(filePath);
                 Dictionary<int, Country> countries = new Dictionary<int, Country>();
                 string subline = ";";
                 int startIndex = 0;
@@ -104,7 +104,7 @@ namespace ConsoleApp7
         return dictionary;
         }
 
-        public static List<string> ConvertDictionaryToArray(Dictionary<int, Country> dictionary)
+        public static List<string> ConvertDictionaryToList(Dictionary<int, Country> dictionary)
         {
             List<string> countryList = new List<string>();
             foreach (var entry in dictionary)
