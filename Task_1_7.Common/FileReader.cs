@@ -33,7 +33,7 @@ namespace Task_1_7.Common
             }
         }
 
-        public void PrintFile(List<string> countryList, string filePath)
+        public void WriteFile(List<string> countryList, string filePath)
         {
             try
             {

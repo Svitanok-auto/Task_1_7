@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Task_1_7.Common;
 using System.IO;
+using System.Linq;
 
 namespace ConsoleApp7
 {
@@ -16,10 +17,11 @@ namespace ConsoleApp7
             Dictionary<int, Country> dictionary = CreateDictionary(filePath);
             if (dictionary != null)
             {
-                dictionary = AddCountryToDictionary(dictionary);
-                dictionary = EditIsTelenorSupportedInDictionary(dictionary);
+                dictionary = AddCountryToDictionary(dictionary, "Ukraine");
+                dictionary = EditIsTelenorSupportedInDictionary(dictionary, "Denmark");
+                dictionary = EditIsTelenorSupportedInDictionary(dictionary, "Hungary");
                 PrintDictionary(dictionary);
-                fileReader.PrintFile(ConvertDictionaryToList(dictionary), filePath);
+                fileReader.WriteFile(ConvertDictionaryToList(dictionary), filePath);
             }
             Console.WriteLine("End...");
             Console.ReadLine();
@@ -27,7 +29,7 @@ namespace ConsoleApp7
 
         public static Dictionary<int, Country> CreateDictionary(string filePath)
         {
-           if (fileReader.GetCountryListFromFile(filePath) != null)
+            try
             {
                 int i = 0;
                 List<string> countryList = fileReader.GetCountryListFromFile(filePath);
@@ -54,30 +56,27 @@ namespace ConsoleApp7
                 }
                 return countries;
             }
-            return null;
+            catch (SystemException ex)
+            {
+                Console.WriteLine("\nFile doesn't exist or path is incorrect: " + ex.Message);
+                return null;
+            }
         }
 
-        public static Dictionary<int, Country> AddCountryToDictionary(Dictionary<int, Country> dictionary)
+        public static Dictionary<int, Country> AddCountryToDictionary(Dictionary<int, Country> dictionary, string countryNameToAdd)
         {
-            bool flag = false;
-            foreach (KeyValuePair<int, Country> kvp in dictionary)
+            Country country = new Country()
             {
-                if ((kvp.Value.Name == "Ukraine"))
-                {
-                    flag = true;
-                }
-            }
-            if (flag == true)
+                Name = countryNameToAdd,
+                IsTelenorSupported = true
+            };
+            if (!dictionary.ContainsValue(country))
             {
+                dictionary.Add(dictionary.Count + 1, country);
                 return dictionary;
             }
             else
             {
-                Country country = new Country() { 
-                    Name = "Ukraine", 
-                    IsTelenorSupported = true };
-
-                dictionary.Add(dictionary.Count + 1, country);
                 return dictionary;
             }
         }
@@ -91,11 +90,11 @@ namespace ConsoleApp7
             }
         }
 
-        public static Dictionary<int, Country> EditIsTelenorSupportedInDictionary(Dictionary<int, Country> dictionary)
+        public static Dictionary<int, Country> EditIsTelenorSupportedInDictionary(Dictionary<int, Country> dictionary, string countryNameToAmend)
         {
             foreach (KeyValuePair<int, Country> kvp in dictionary)
             {
-                if ((kvp.Value.IsTelenorSupported != true) && ((kvp.Value.Name == "Denmark") || (kvp.Value.Name == "Hungary")))
+                if ((kvp.Value.IsTelenorSupported != true) && (kvp.Value.Name == countryNameToAmend))
                 {
                     kvp.Value.IsTelenorSupported = true;
                     Console.WriteLine("Updates: Key = {0}, Value Name = {1}, Value IsTelenorSupported = {2}", kvp.Key, kvp.Value.Name, kvp.Value.IsTelenorSupported);
@@ -112,7 +111,7 @@ namespace ConsoleApp7
                  string dictionaryString = entry.Value.Name + ";" + entry.Value.IsTelenorSupported;
                  countryList.Add(dictionaryString);
             }
-        return countryList;
+            return countryList;
         }
     }
 }
