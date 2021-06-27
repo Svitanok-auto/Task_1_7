@@ -1,15 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp7
 {
-    class Program
+    public class Program
     {
+        private static FileReader fileReader = new FileReader();
         static void Main(string[] args)
         {
+
+
         }
     }
 }
